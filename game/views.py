@@ -1,8 +1,7 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from .algorithms.algorithms import bfs_puzzle, best_first_search, a_star_search, hamming_heuristic, manhattan_heuristic
+from .algorithms.algorithms import bfs_puzzle, best_first_search, a_star_search
+from .algorithms.heuristics import hamming_heuristic, manhattan_heuristic
 
 class BFSAlgorithm(APIView):
     def post(self, request):
@@ -10,7 +9,7 @@ class BFSAlgorithm(APIView):
             start_state = request.data.get("start_state")
             goal_state = request.data.get("goal_state")
 
-            print("Početno stanje:", start_state)
+            print("Pocetno stanje:", start_state)
             print("Ciljno stanje:", goal_state)
 
             result = bfs_puzzle(start_state, goal_state)
@@ -23,8 +22,6 @@ class BFSAlgorithm(APIView):
         except Exception as e:
             print("Greška:", str(e))
             return Response({"error": str(e)}, status=500)
-
-
 
 class BestFirstSearchAlgorithm(APIView):
     def post(self, request):
@@ -39,8 +36,6 @@ class BestFirstSearchAlgorithm(APIView):
                 return Response({"error": "Solution not found"}, status=404)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
-
-
 
 class AStarAlgorithm(APIView):
     def post(self, request):
