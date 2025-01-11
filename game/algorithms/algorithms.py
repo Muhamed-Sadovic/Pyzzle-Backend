@@ -4,12 +4,11 @@ from heapq import heappush, heappop
 def get_neighbors(state):
     neighbors = []
     zero_row, zero_col = [(r, c) for r in range(3) for c in range(3) if state[r][c] == 0][0]
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # gore, dole, levo, desno
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     for dr, dc in directions:
         new_row, new_col = zero_row + dr, zero_col + dc
         if 0 <= new_row < 3 and 0 <= new_col < 3:
             new_state = [row[:] for row in state]
-            # Zameni prazno polje sa susednim
             new_state[zero_row][zero_col], new_state[new_row][new_col] = (
                 new_state[new_row][new_col],
                 new_state[zero_row][zero_col],
@@ -22,11 +21,10 @@ def linearize(state):
 
 def bfs_puzzle(start_state, goal_state):
     visited = set()
-    queue = deque([(start_state, [])])  # (trenutno stanje, lista poteza)
+    queue = deque([(start_state, [])])
 
     while queue:
         current_state, path = queue.popleft()
-        # Pretvori matricu u tuple za lakše poređenje i smeštanje u set
         state_tuple = tuple(tuple(row) for row in current_state)
 
         if state_tuple in visited:
@@ -34,16 +32,16 @@ def bfs_puzzle(start_state, goal_state):
         visited.add(state_tuple)
 
         if current_state == goal_state:
-            return path  # Lista poteza do cilja
+            return path
 
         for neighbor in get_neighbors(current_state):
             queue.append((neighbor, path + [neighbor]))
 
-    return None  # Ako ne postoji rešenje
+    return None
 
 def best_first_search(start_state, goal_state, heuristic):
     open_set = []
-    heappush(open_set, (0, linearize(start_state), start_state, []))  # Dodaj listu koraka
+    heappush(open_set, (0, linearize(start_state), start_state, []))
     visited = set()
 
     while open_set:
@@ -61,11 +59,11 @@ def best_first_search(start_state, goal_state, heuristic):
                 h_value = heuristic(neighbor, goal_state)
                 heappush(open_set, (h_value, linearize(neighbor), neighbor, path + [current_state]))
 
-    return None  # Ako nema rešenja
+    return None
 
 def a_star_search(start_state, goal_state, heuristic):
     open_set = []
-    heappush(open_set, (0, 0, linearize(start_state), start_state, []))  # Dodaj listu koraka
+    heappush(open_set, (0, 0, linearize(start_state), start_state, []))
     visited = {}
 
     while open_set:
